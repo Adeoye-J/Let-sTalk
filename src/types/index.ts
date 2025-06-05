@@ -1,3 +1,13 @@
+
+export type ContextType = {
+    user: User;
+    isLoading: boolean;
+    setUser: React.Dispatch<React.SetStateAction<User>>;
+    isAuthenticated: boolean;
+    setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
+    checkAuthUser: () => Promise<boolean>;
+}
+
 export type NavLink = {
   imgURL: string;
   route: string;
