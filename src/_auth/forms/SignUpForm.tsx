@@ -21,9 +21,9 @@ const SignUpForm = () => {
     const navigate = useNavigate()
     // const isLoading = false // Replace with actual loading state later
 
-    const { mutateAsync: createUser, isLoading: isCreatingUser } = useCreateUserAccount();
+    const { mutateAsync: createUser, isPending: isCreatingUser } = useCreateUserAccount();
 
-    const { mutateAsync: signIn, isLoading: isSigningIn } = useSignInUserAccount()
+    const { mutateAsync: signIn, isPending: isSigningIn } = useSignInUserAccount()
 
     const form = useForm<z.infer<typeof signUpSchema>>({
         resolver: zodResolver(signUpSchema),
