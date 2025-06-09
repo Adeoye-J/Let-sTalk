@@ -102,3 +102,12 @@ export async function getCurrentUser() {
         throw error; // or handle the error as needed
     }
 }
+
+export async function signOutUser() {
+    try {
+        const session = await account.deleteSession("current")
+        return session
+    } catch (error) {
+        console.log(error)
+    }
+}

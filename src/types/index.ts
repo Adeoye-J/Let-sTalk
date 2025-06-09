@@ -8,7 +8,7 @@ export type ContextType = {
     checkAuthUser: () => Promise<boolean>;
 }
 
-export type NavLink = {
+export type NaviLink = {
   imgURL: string;
   route: string;
   label: string;

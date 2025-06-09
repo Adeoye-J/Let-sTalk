@@ -12,6 +12,7 @@ function App() {
 
     return (
         <main className="flex h-screen">
+            <Toaster />
             <Routes>
                 {/* Public Routes */}
                 <Route element={<AuthLayout /> }>
@@ -28,7 +29,6 @@ function App() {
 
             </Routes>
 
-            <Toaster />
         </main>
     )
 }
