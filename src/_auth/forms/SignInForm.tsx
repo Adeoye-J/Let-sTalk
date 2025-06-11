@@ -6,13 +6,13 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { signUpSchema, signInSchema } from "@/lib/validation"
+import { signInSchema } from "@/lib/validation"
 import Loader from "@/components/shared/Loader"
 import { Link, useNavigate } from "react-router-dom"
 import { useToast } from "@/hooks/use-toast"
 import { useSignInUserAccount } from "@/lib/react-query/queriesAndMutations"
 import { useUserContext } from "@/context/AuthContext"
-import { account } from "@/lib/appwrite/config"
+// import { account } from "@/lib/appwrite/config"
 
 
 const SignInForm = () => {
@@ -21,7 +21,7 @@ const SignInForm = () => {
     const { checkAuthUser, isLoading: isUserLoading } = useUserContext()
     const navigate = useNavigate()
 
-    const { mutateAsync: signIn, isPending } = useSignInUserAccount()
+    const { mutateAsync: signInUser, isPending } = useSignInUserAccount()
 
     const form = useForm<z.infer<typeof signInSchema>>({
         resolver: zodResolver(signInSchema),
@@ -35,16 +35,16 @@ const SignInForm = () => {
 
     const onSubmit = async (data: z.infer<typeof signInSchema>) => {
 
-        try {
+        // try {
 
-            try {
-                await account.get();
-                await account.deleteSession("current")
-            } catch (error) {
-                // No active session or failed to check session - ignore
-            }
+            // try {
+            //     await account.get();
+            //     await account.deleteSession("current")
+            // } catch (error) {
+            //     // No active session or failed to check session - ignore
+            // }
 
-            const session = await signIn({ email: data.email, password: data.password})
+            const session = await signInUser({ email: data.email, password: data.password})
 
             if (!session) {
                 console.log("Sign In failed:", session)
@@ -64,13 +64,13 @@ const SignInForm = () => {
                 })
             }
 
-        } catch (error: any) {
-            console.error("Error during sign-in:", error)
-            toast({
-                title: "An error occurred during sign-in.",
-                description: error?.message || "Please try again."
-            })
-        }
+        // } catch (error: any) {
+        //     console.error("Error during sign-in:", error)
+        //     toast({
+        //         title: "An error occurred during sign-in.",
+        //         description: error?.message || "Please try again."
+        //     })
+        // }
 
     }
     

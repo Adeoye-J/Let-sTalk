@@ -23,7 +23,7 @@ const SignUpForm = () => {
 
     const { mutateAsync: createUser, isPending: isCreatingUser } = useCreateUserAccount();
 
-    const { mutateAsync: signIn, isPending: isSigningIn } = useSignInUserAccount()
+    const { mutateAsync: signInUser, isPending: isSigningIn } = useSignInUserAccount()
 
     const form = useForm<z.infer<typeof signUpSchema>>({
         resolver: zodResolver(signUpSchema),
@@ -47,7 +47,7 @@ const SignUpForm = () => {
             })
         }
 
-        const session = await signIn({ email: data.email, password: data.password})
+        const session = await signInUser({ email: data.email, password: data.password})
 
         if (!session) {
             console.log("Sign In failed:", session)
@@ -66,7 +66,6 @@ const SignUpForm = () => {
                 title: "Sign Up failed. Please try again."
             })
         }
-
     }
     
     return (

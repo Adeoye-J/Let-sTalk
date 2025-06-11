@@ -33,7 +33,7 @@ const AuthProvider = ({children} : {children: React.ReactNode}) => {
 
     const checkAuthUser = async () => {
 
-        setIsLoading(true)
+        // setIsLoading(true)
 
         try {
             // Here you would typically check if the user is authenticated

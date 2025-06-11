@@ -8,6 +8,7 @@ const nameSchema = z
 
 const usernameSchema = z
 .string()
+.min(1, {message: "Username is required"})
 .min(2, { message: 'Username must be at least 2 characters long' })
 .max(50, { message: 'Username must not exceed 50 characters' });
 

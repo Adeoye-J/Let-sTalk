@@ -18,7 +18,7 @@ export async function createUser(user: NewUser) {
 
         const avatarUrl = avatars.getInitials(user.name);
 
-        await saveUserToDB({
+        const newUser = await saveUserToDB({
             accountId: newAccount.$id,
             email: newAccount.email,
             name: newAccount.name,
@@ -26,7 +26,7 @@ export async function createUser(user: NewUser) {
             username: user.username
         })
 
-        return newAccount
+        return newUser
     } catch (error) {
         console.error('Error creating user:', error);
         return error; // or throw error;
