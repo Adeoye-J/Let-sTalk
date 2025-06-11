@@ -1,33 +1,51 @@
 // import React from 'react'
+import { useNavigate } from "react-router-dom"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import {z} from "zod"
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage, } from "@/components/ui/form"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, } from "@/components/ui/form"
 import { Button } from '@/components/ui/button'
 import { Input } from "@/components/ui/input"
 import FileUploader from "../shared/FileUploader"
+import { postValidationSchema } from "@/lib/validation"
+import type { Models } from "appwrite"
+import { useUserContext } from "@/context/AuthContext"
+import { toast } from "@/hooks/use-toast"
+import { useCreatePost } from "@/lib/react-query/queriesAndMutations"
+import Loader from "../shared/Loader"
 
 // npm i shad@latest textarea
 
+type PostFormProps = {
+    post?: Models.Document;
+}
 
-const formSchema = z.object({
-    username: z.string().min(2, {
-        message: "Username must be at least 2 characters.",
-    })
-})
+const PostForm = ({ post }: PostFormProps) => {
 
+    const { mutateAsync: createPost, isPending: isCreatingPost } = useCreatePost()
+    const { user } = useUserContext()
+    const navigate = useNavigate()
 
-const PostForm = () => {
-
-    const form = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema),
+    const form = useForm<z.infer<typeof postValidationSchema>>({
+        resolver: zodResolver(postValidationSchema),
         defaultValues: {
-            username: "",
+            caption: post ? post?.caption : "",
+            file: [],
+            location: post ? post?.location : "",
+            tags: post ? post.tags.join(",") : ""
         }
     })
 
-    function onSubmit(values: z.infer<typeof formSchema>) {
-        console.log(values)
+    async function onSubmit(values: z.infer<typeof postValidationSchema>) {
+        const newPost = await createPost({...values, userId: user.id})
+
+        if(!newPost) {
+            return toast({
+                title: "Unable to create post. Please try again",
+            })
+        }
+
+        navigate("/")
     }
 
     return (
@@ -46,7 +64,10 @@ const PostForm = () => {
                     <FormItem>
                         <FormLabel className="shad-form_label">Add Photos</FormLabel>
                         <FormControl>
-                            <FileUploader />
+                            <FileUploader 
+                                fieldChange={field.onChange}
+                                mediaUrl={post?.imageUrl}
+                            />
                         </FormControl>
                         <FormMessage className="shad-form_message" />
                     </FormItem>
@@ -55,7 +76,7 @@ const PostForm = () => {
                     <FormItem>
                         <FormLabel className="shad-form_label">Add Location</FormLabel>
                         <FormControl>
-                            <Input type="text" className="shad-input" />
+                            <Input type="text" className="shad-input" {...field} />
                         </FormControl>
                         <FormMessage className="shad-form_message" />
                     </FormItem>
@@ -64,7 +85,7 @@ const PostForm = () => {
                     <FormItem>
                         <FormLabel className="shad-form_label">Add Tags (separated by comma " , ")</FormLabel>
                         <FormControl>
-                            <Input type="text" className="shad-input" placeholder="Art, Expression, Learn" />
+                            <Input type="text" className="shad-input" placeholder="Art, Expression, Learn" {...field} />
                         </FormControl>
                         <FormMessage className="shad-form_message" />
                     </FormItem>
@@ -72,7 +93,20 @@ const PostForm = () => {
 
                 <div className="flex items-center gap-4 justify-end">
                     <Button type="button" className="shad-button_dark_4">Cancel</Button>
-                    <Button type="submit" className="shad-button_primary whitespace-nowrap">Submit</Button>
+                    <Button type="submit" className="shad-button_primary whitespace-nowrap">
+                        {
+                            isCreatingPost ? (
+                                <div className="flex-center gap-2">
+                                    <Loader />
+                                    Creating Post...
+                                    {/* This below can be gotten from lucide-react */}
+                                    {/* <Loader className="animate-spin" size={20} /> */}
+                                </div>
+                            ) : (
+                                "Submit"
+                            )
+                        }
+                    </Button>
                 </div>
             </form>
         </Form>
