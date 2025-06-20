@@ -29,6 +29,16 @@ const Home = () => {
                             </ul>
                         )
                     }
+                    {/* {
+                        isErrorPosts ? (
+                            <div className="">Error Fetching</div>
+                            
+                        ): (
+                            <div className="">
+                                Not sure again like this oooo
+                            </div>
+                        )
+                    } */}
                 </div>
             </div>
         </div>
